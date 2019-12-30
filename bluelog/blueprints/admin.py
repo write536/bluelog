@@ -17,6 +17,7 @@ from bluelog.models import Post, Category, Comment, Link
 from bluelog.utils import redirect_back, allowed_file
 
 admin_bp = Blueprint('admin', __name__)
+# 传入第一个参数为蓝本名称，第二个参数是蓝本所在.py的名称。adminb_bp是蓝本实例（蓝本对象）
 
 
 @admin_bp.route('/settings', methods=['GET', 'POST'])
