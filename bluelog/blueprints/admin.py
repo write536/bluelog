@@ -39,13 +39,14 @@ def settings():
     return render_template('admin/settings.html', form=form)
 
 
+# 文章管理主页：查所有文章并分页
 @admin_bp.route('/post/manage')
 @login_required
 def manage_post():
-    page = request.args.get('page', 1, type=int)
+    page = request.args.get('page', 1, type=int)  # 请求上下文中获取参数
     pagination = Post.query.order_by(Post.timestamp.desc()).paginate(
-        page, per_page=current_app.config['BLUELOG_MANAGE_POST_PER_PAGE'])
-    posts = pagination.items
+        page, per_page=current_app.config['BLUELOG_MANAGE_POST_PER_PAGE'])  # 分页
+    posts = pagination.items  # 每页数据
     return render_template('admin/manage_post.html', page=page, pagination=pagination, posts=posts)
 
 

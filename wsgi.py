@@ -8,3 +8,4 @@ if os.path.exists(dotenv_path):
 from bluelog import create_app  # noqa
 
 app = create_app('production')
+# app.run(host=0, port=5000, debug=True)

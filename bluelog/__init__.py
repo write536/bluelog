@@ -10,6 +10,7 @@ import os
 from logging.handlers import SMTPHandler, RotatingFileHandler
 
 import click
+from flask.logging import default_handler
 from flask import Flask, render_template, request
 from flask_login import current_user
 from flask_sqlalchemy import get_debug_queries
@@ -30,6 +31,7 @@ def create_app(config_name=None):
         config_name = os.getenv('FLASK_CONFIG', 'development')
 
     app = Flask('bluelog')
+    # config.from_object:
     app.config.from_object(config[config_name])
 
     register_logging(app)
@@ -55,14 +57,14 @@ def register_logging(app):
         '[%(asctime)s] %(remote_addr)s requested %(url)s\n'
         '%(levelname)s in %(module)s: %(message)s'
     )
-
+    default_handler.setLevel(logging.DEBUG)
     formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
     file_handler = RotatingFileHandler(os.path.join(basedir, 'logs/bluelog.log'),
                                        maxBytes=10 * 1024 * 1024, backupCount=10)
     file_handler.setFormatter(formatter)
-    file_handler.setLevel(logging.INFO)
-
+    file_handler.setLevel(logging.DEBUG)
+    default_handler.setFormatter(formatter)
     mail_handler = SMTPHandler(
         mailhost=app.config['MAIL_SERVER'],
         fromaddr=app.config['MAIL_USERNAME'],
@@ -75,6 +77,7 @@ def register_logging(app):
     if not app.debug:
         app.logger.addHandler(mail_handler)
         app.logger.addHandler(file_handler)
+        app.logger.addHandler(default_handler)
 
 
 def register_extensions(app):
@@ -101,6 +104,7 @@ def register_shell_context(app):
         return dict(db=db, Admin=Admin, Post=Post, Category=Category, Comment=Comment)
 
 
+# 待审核评论处理
 def register_template_context(app):
     @app.context_processor
     def make_template_context():
@@ -119,6 +123,7 @@ def register_template_context(app):
 def register_errors(app):
     @app.errorhandler(400)
     def bad_request(e):
+        # app.logger.error()
         return render_template('errors/400.html'), 400
 
     @app.errorhandler(404)

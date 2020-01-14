@@ -39,7 +39,7 @@ class BaseConfig(object):
     BLUELOG_EMAIL = os.getenv('BLUELOG_EMAIL')
     BLUELOG_POST_PER_PAGE = 10
     BLUELOG_MANAGE_POST_PER_PAGE = 15
-    BLUELOG_COMMENT_PER_PAGE = 15
+    BLUELOG_COMMENT_PER_PAGE = 15  # 每页15条
     # ('theme name', 'display name')
     BLUELOG_THEMES = {'perfect_blue': 'Perfect Blue', 'black_swan': 'Black Swan'}
     BLUELOG_SLOW_QUERY_THRESHOLD = 1
